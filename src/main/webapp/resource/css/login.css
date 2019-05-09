@@ -1,0 +1,128 @@
+/* .form-control {
+    height: 40px;
+    border: 1px solid RGB(20, 20, 130);
+    background-color: RGB(0, 0, 80);
+    margin-bottom: 20px;
+    color: RGB(190, 188, 200);
+    padding-left: 25px;
+    font-size: 20px;
+    border-radius: 10px;
+}
+
+button[name=submit] {
+    padding: 6px 33px;
+    height: 43px;
+    width: 304px;
+    font-size: 18px;
+}
+
+.btn {
+    font-size: 18px;
+}
+
+.panel-heading {
+    height: 62px;
+    text-align: left;
+    background: none !important;
+    line-height: 82px;
+    border-bottom: 1px solid #d2d2d2 !important;
+}
+
+.panel-body {
+    padding: 26px 13px 15px 13px;
+}
+
+.copyright_info {
+    position: absolute;
+    width: 320px;
+    color: #606060;
+    font-size: 12px;
+    bottom: 0;
+    left: calc(50% - 160px);
+}
+
+input[name=passWord], input[name=userName] {
+    border-left: 0px;
+    border-top: 0px;
+    border-right: 0px;
+    border-bottom: 1px solid #d2d2d2 !important;
+    outline: medium;
+    height: 43px;
+    width: 302px;
+}
+
+.span-text {
+    font-size: 12px;
+    color: #999999;
+} */
+body {
+	background-image: url(../images/bg.png);
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+form {
+	background-color: #e9ebf1;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	border: 1px solid #0058b0;
+}
+.panel-body {
+	padding: 0 55px 0 38px;
+}
+form > div {
+	margin: 28px 0;
+}
+form div:first-child {
+	margin-top: 16px;
+	padding-bottom: 6px;
+	border-bottom: 1px solid #0058b0;
+}
+form div:last-child {
+	margin-bottom: 32px;
+}
+form input {
+    height: 38px;
+	width: 297px;
+	padding: 0;
+	text-indent: 35px;
+	font-size: 14px;
+	border: 1px solid #0058b0;
+    outline: none;
+}
+form button[name="submit"] {
+	background-color: #0058b0;
+	width: 297px;
+    height: 44px;
+	margin-right: 12px;
+	font-size: 14px;
+	color: #fff;
+	border: 1px solid #0058b0;
+	outeline: none;
+	border-radius: 5px;
+}
+#forgetPassword {
+	font-size: 12px;
+	color: #0058b0;
+	cursor: pointer;
+}
+img {
+	height: 31px;
+	margin-left: 6px;
+	margin-right: 9px;
+	vertical-align: middle;
+}
+img + span {
+	font-size: 14px;
+	letter-spacing: .5em;
+	color: #0058b0;
+	vertical-align: middle;
+}
+#span{
+	font-size: 14px;
+	letter-spacing: .5em;
+	color: #0058b0;
+	vertical-align: middle;
+	text-align: center;
+}

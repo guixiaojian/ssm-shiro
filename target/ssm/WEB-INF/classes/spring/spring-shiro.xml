@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+                        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+	default-lazy-init="true">
+ 
+	<!-- 配置安全管理器securityManager， 缓存技术: 缓存管理 realm:负责获取处理数据 -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+
+		<property name="realm" ref="myShiroRealm" />
+
+		<property name="cacheManager" ref="cacheManager" />
+
+		<!--会话管理-->
+		<property name="sessionManager" ref="sessionManager"/>
+
+		<!--记住当前登录状态-->
+		<property name="rememberMeManager" ref="rememberMeManager"/>
+
+	</bean>
+
+
+	
+	<!-- 項目自定义的Realm,从数据库中获取用户的安全数据 -->
+	<!--<bean id="myShiroRealm" class="com.tx.shiro.UserRealm">
+		&lt;!&ndash; 配置缓存管理器&ndash;&gt;
+		<property name="cacheManager" ref="cacheManager" />
+		&lt;!&ndash; 配置加密器 或者在realm中配置&ndash;&gt;
+		<property name="credentialsMatcher">
+			<bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+				<property name="hashAlgorithmName" value="MD5"></property> &lt;!&ndash; 加密算法的名称 &ndash;&gt;
+				<property name="hashIterations" value="2"></property> &lt;!&ndash; 配置加密的次数 &ndash;&gt;
+			</bean>
+		</property>
+	</bean>-->
+
+	<bean id="myShiroRealm" class="com.tx.shiro.UserRealm" init-method="setCredentialMatcher">
+		<!-- 配置缓存管理器-->
+		<!--<property name="cacheManager" ref="cacheManager" />-->
+	</bean>
+
+
+
+ 
+	<!-- 用户授权信息Cache 需要就配，不需要刻意不配  shiro自带-->
+	<!--<bean id="cacheManager" class="org.apache.shiro.cache.MemoryConstrainedCacheManager" />-->
+
+	<bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+		<property name="cacheManagerConfigFile" value="classpath:shiro-ehcache.xml"/>
+	</bean>
+ 
+	<!-- 必须配置lifecycleBeanPostProcessor:管理shiro中常见的对象 -->
+	<!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+ 
+	<!-- shiro的核心配置:  配置shiroFileter id名必须与web.xml中的filtername保持一致 -->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+		<!-- 当访问需要认证的资源时，如果没有认证，没有登录，那么会自动跳转到该url；如果不配置该属性，，默认会加载根路径下login.jsp -->
+		<property name="loginUrl" value="/sys/login" />
+		<!-- <property name="loginUrl" value="/login.jsp" /> -->
+		
+		<!-- 配置认证成功后，跳转到哪个url，通常不设置，默认认证成功后跳转到上一个url -->
+		<property name="successUrl" value="/index.jsp" />
+		
+		<!-- 配置用户没有权限访问资源时，跳转的页面 -->
+		<property name="unauthorizedUrl" value="/user.jsp" />
+		<!-- shiro过滤器的具体配置 -->
+		<!-- anon-匿名访问，authc-需要认证 -->
+		<property name="filterChainDefinitions">
+			<value>
+				<!-- 配置拦截 anon不拦截  authc拦截认证 -->
+			
+				/sys/doLogin = anon
+				/sys/login = anon
+				/resource/** = anon
+				/login = authc
+				/login.jsp = anon
+				/jsp/** = anon
+				/user/login = anon
+				/index.jsp = authc
+				/admin/** = roles[admin]  <!-- 需要admin角色 -->
+				/user/** = roles[user] <!-- 需要user角色 -->
+                /logout=logout
+				/** = authc
+			</value>
+		</property>
+	</bean>
+
+	<!--配置会话管理器-->
+	<bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+
+		<!--去掉URL中的JSESSIONID-->
+		<property name="sessionIdUrlRewritingEnabled" value="false"/>
+		<!-- 会话存活时间(毫秒) -->
+		<property name="globalSessionTimeout" value="60000"/><!-- 10分钟 -->
+		<!-- 是否删除无效的session-->
+		<property name="deleteInvalidSessions" value="true"/>
+
+
+	</bean>
+
+
+	<bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">
+		<property name="cipherKey" value="#{T(org.apache.shiro.codec.Base64).
+                                              decode('4AvVhmFLUs0KTA3Kprsdag==')}"/>
+		<property name="cookie" ref="rememberMeCookie"/>
+	</bean>
+
+	<bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+		<property name="maxAge" value="604800"/><!-- cookie存活时间 7天  当值为-1时，浏览器关闭，cookie失效-->
+		<constructor-arg value="rememberMe"/><!--设置cookie名称-->
+		<property name="httpOnly" value="true"/>
+	</bean>
+
+	    <!-- 开启Shiro注解 -->
+  <!--  <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+          depends-on="lifecycleBeanPostProcessor"/>
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>-->
+ 
+</beans> 
